@@ -2,6 +2,10 @@
 #include <Windows.h>
 #include <tchar.h>
 
+#define GAME_START 0
+#define HOW_TO_PLAY 1
+#define GAME_END -1
+
 //메시지(이벤트) 발생 시 메시지를 전달받아 처리하는 역할
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
@@ -18,7 +22,7 @@ LPCTSTR lpszClass = _T("Mr.Con Pizza");
 void WndClassInit(WNDCLASS* WndClass, HINSTANCE hInstance) {
 	WndClass->cbClsExtra = 0;
 	WndClass->cbWndExtra = 0;
-	WndClass->hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH); //윈도우 배경 색상 지정
+	WndClass->hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH); //윈도우 배경 색상 지정
 	WndClass->hCursor = LoadCursor(NULL, IDC_ARROW); //커서 지정
 	WndClass->hIcon = LoadIcon(NULL, IDI_APPLICATION); //아이콘 지정
 	WndClass->hInstance = hInstance; //해당 윈도우 클래스를 등록하는 프로그램 번호
@@ -43,6 +47,15 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	hWnd = CreateWindow(lpszClass, lpszClass, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, NULL, (HMENU)NULL, hInstance, NULL);
 	hWndMain = hWnd;
 
+	HWND gameStart = CreateWindowW(L"button", L"게임 시작", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 20, 400, 100, 20, hWnd, (HMENU)0, g_hInst, NULL);
+	hWndMain = gameStart;
+
+	HWND howTOPlay = CreateWindowW(L"button", L"게임 설명", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 20, 440, 100, 20, hWnd, (HMENU)1, g_hInst, NULL);
+	hWndMain = howTOPlay;
+	
+	HWND gameEnd = CreateWindowW(L"button", L"게임 종료", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 20, 480, 100, 20, hWnd, (HMENU)-1, g_hInst, NULL);
+	hWndMain = gameEnd;
+
 	ShowWindow(hWnd, nCmdShow);
 
 	while (GetMessage(&Message, NULL, 0, 0)) {
@@ -54,16 +67,21 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 }
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam) {
-
 	switch (iMessage) {
+	case WM_CREATE:
+		
+		return 0;
 	case WM_COMMAND:
-
-	case WM_RBUTTONDOWN:
-		MessageBox(hWnd, TEXT("오른쪽 입력"), TEXT("ㅁㄴㅇㄹ"), MB_OK);
+		switch (LOWORD(wParam)) {
+		case 0:
+			MessageBox(hWnd, L"게임 시작 클릭", L"Button", MB_OK);
+			break;
+		case 1:
+			MessageBox(hWnd, L"게임 설명 클릭", L"Button", MB_OK);
+			break;
+		}
 		return 0;
-	case WM_LBUTTONDOWN:
-		MessageBox(hWnd, TEXT("왼쪽 입력"), TEXT("메시지 박스"), MB_OK);
-		return 0;
+	//case WM_LBUTTONDOWN:
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		return 0;
