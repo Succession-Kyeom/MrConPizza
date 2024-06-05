@@ -50,9 +50,9 @@ public:
 
 class UI {
 private:
-	static int star;
-	static int day;
-	static queue<Order*> list;
+	int star;
+	int day;
+	queue<Order*> list;
 public:
 	UI();
 	void GetOrder(); //주문 받는 함수

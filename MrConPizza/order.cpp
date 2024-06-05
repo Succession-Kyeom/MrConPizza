@@ -64,7 +64,8 @@ wchar_t* Order::GetSpecial() {
 }
 
 UI::UI() {
-
+	star = 3;
+	day = 1;
 }
 
 void UI::GetOrder() {
@@ -85,8 +86,8 @@ void UI::GetOrder() {
 void UI::PrintList(HDC hdc) {
 	SetTextAlign(hdc, TA_CENTER);
 	TextOut(hdc, 800, 20, L"주문서", lstrlen(L"주문서"));
-
-	for (queue<Order*> temp = list, int i = 0; !temp.empty(); temp.pop()) {
+	int i = 0;
+	for (queue<Order*> temp = list; !temp.empty(); temp.pop(), i++) {
 		Order* index = temp.front();
 		TCHAR* place = index->GetPlace();
 		TCHAR* pizza = index->GetPizza();

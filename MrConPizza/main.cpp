@@ -5,7 +5,7 @@
 #define GAME_START 0
 #define HOW_TO_PLAY 1
 #define GAME_END -1
-
+/*
 //메시지(이벤트) 발생 시 메시지를 전달받아 처리하는 역할
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
@@ -88,6 +88,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	}
 	return(DefWindowProc(hWnd, iMessage, wParam, lParam));
 }
-
+*/
 // https://chanos.tistory.com/category/%EA%B0%9C%EB%B0%9C/Win32%20API%20Programming?page=1
 // https://www.youtube.com/playlist?list=PL4SIC1d_ab-ZLg4TvAO5R4nqlJTyJXsPK
