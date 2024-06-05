@@ -122,7 +122,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 			ShowWindow(GetDlgItem(hWnd, HOWTOPLAY), SW_SHOW);
 		}
 		else if (gameState == EXPLAIN) {
-			
+			ShowWindow(GetDlgItem(hWnd, BACK), SW_SHOW);
 		}
 		else if (gameState == ORDER) {
 			for (int index = 0; index < 3; index++) {
@@ -146,7 +146,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	}
 	return(DefWindowProc(hWnd, iMessage, wParam, lParam));
 }
-*/
+
 // https://chanos.tistory.com/category/%EA%B0%9C%EB%B0%9C/Win32%20API%20Programming?page=1
 // https://www.youtube.com/playlist?list=PL4SIC1d_ab-ZLg4TvAO5R4nqlJTyJXsPK
 // https://skql.tistory.com/536

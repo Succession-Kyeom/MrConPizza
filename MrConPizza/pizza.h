@@ -2,8 +2,6 @@
 //피자 클래스
 class Pizza {
 private:
-	//피자 이름
-	wchar_t* name;
 	//피자 베이스
 	bool dough;
 	bool sauce;
@@ -21,6 +19,6 @@ private:
 	int* toppings[8];
 public:
 	Pizza();
-	wchar_t* GetPizza();
+	Pizza(int* setting);
 	friend bool operator == (Pizza ordered, Pizza made);
 };

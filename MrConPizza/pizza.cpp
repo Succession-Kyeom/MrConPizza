@@ -6,8 +6,7 @@
 
 //피자 클래스 state 초기화
 Pizza::Pizza()
-	:name(NULL),
-	dough(false), sauce(false), cheese(false),
+	:dough(false), sauce(false), cheese(false),
 	pepperoni(NONE), tomato(NONE), paprika(NONE), pepper(NONE), onion(NONE), olive(NONE), shrimp(NONE), mushroom(NONE) {
 	//배열에 매핑(일치 여부, 버튼에 이용)
 	base[0] = &dough;
@@ -24,8 +23,18 @@ Pizza::Pizza()
 	toppings[7] = &mushroom;
 }
 
-wchar_t* Pizza::GetPizza() {
-	return name;
+Pizza::Pizza(int* setting) {
+	Pizza();
+	
+	int index = 0;
+	for (; index < 3; index++) {
+		if (setting[index] == 1) {
+			*base[index] = true;
+		}
+	}
+	for (int index2 = 0; index2 < 8; index2++) {
+		*toppings[index2] = setting[index + index2];
+	}
 }
 
 //주문 피자와 제작 피자가 일치하면 true, 다르면 false

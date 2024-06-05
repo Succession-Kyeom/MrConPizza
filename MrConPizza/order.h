@@ -13,11 +13,12 @@ using namespace std;
 class Order {
 private:
 	wchar_t* place;
+	wchar_t* menu;
 	Pizza pizza;
 	wchar_t* delivery;
 	wchar_t* special;
 public:
-	Order(int orderCase);
+	Order(int difficult);
 	wchar_t* GetPlace();
 	wchar_t* GetPizza();
 	wchar_t* GetDelivery();
