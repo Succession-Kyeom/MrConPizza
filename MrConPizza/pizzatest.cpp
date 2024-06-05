@@ -1,4 +1,5 @@
-﻿#include "framework.h"
+﻿/*
+#include "framework.h"
 #include "Resource.h"
 #include <stdlib.h>
 #include <time.h>
@@ -143,8 +144,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance) {
 
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow) {
     hInst = hInstance;
-    g_hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-        CW_USEDEFAULT, 0, SCREEN_X, SCREEN_Y, nullptr, nullptr, hInstance, nullptr);
+    g_hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, 0, SCREEN_X, SCREEN_Y, nullptr, nullptr, hInstance, nullptr);
 
     if (!g_hWnd) {
         return FALSE;
@@ -273,7 +273,7 @@ void MoveBall() {
         g_BallY = targetY;
     }
 
-    if (itemIndex != -1 && items[itemIndex].visible)
+    if (itemIndex != -1 && items[itemIndex].visible)   
     {
         items[itemIndex].visible = false;
 
@@ -414,3 +414,4 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     }
     return (INT_PTR)FALSE;
 }
+*/

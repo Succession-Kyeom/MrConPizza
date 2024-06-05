@@ -24,6 +24,11 @@
 #ifndef IDC_STATIC
 #define IDC_STATIC				-1
 #endif
+
+#define GAMESTART 100
+#define HOWTOPLAY 101
+#define BACK 99
+
 // 다음은 새 개체에 사용할 기본값입니다.
 //
 #ifdef APSTUDIO_INVOKED
