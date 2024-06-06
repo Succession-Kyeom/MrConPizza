@@ -1,4 +1,6 @@
 #pragma once
+#include <iostream>
+
 //피자 클래스
 class Pizza {
 private:
@@ -19,6 +21,7 @@ private:
 	int* toppings[8];
 public:
 	Pizza();
-	Pizza(int* setting);
+	//피자 베이스 & 토핑 값 재설정
+	void ResetPizza(int* setting);
 	friend bool operator == (Pizza ordered, Pizza made);
 };

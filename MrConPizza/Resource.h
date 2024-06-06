@@ -25,9 +25,25 @@
 #define IDC_STATIC				-1
 #endif
 
+//버튼 이벤트 설정
 #define GAMESTART 100
 #define HOWTOPLAY 101
 #define BACK 99
+
+#define DOUGH 0
+#define SAUCE 1
+#define CHEESE 2
+#define PEPPERONI 3
+#define TOMATO 4
+#define PAPRIKA 5
+#define PEPPER 6
+#define ONION 7
+#define OLIVE 8
+#define SHRIMP 9
+#define MUSHROOM 10
+#define DISPOSAL 11
+#define COOK 12
+
 
 // 다음은 새 개체에 사용할 기본값입니다.
 //

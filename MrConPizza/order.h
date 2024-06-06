@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
-#include <queue>
+#include <windows.h>
+#include <wchar.h>
+#include <random>
 
 #include "pizza.h"
 
@@ -12,26 +14,16 @@ using namespace std;
 //주문 클래스
 class Order {
 private:
-	wchar_t* place;
-	wchar_t* menu;
 	Pizza pizza;
-	wchar_t* delivery;
-	wchar_t* special;
+	wchar_t place[20];
+	wchar_t menu[20];
+	wchar_t delivery[20];
+	wchar_t special[100];
 public:
-	Order(int difficult);
+	Order();
 	wchar_t* GetPlace();
-	wchar_t* GetPizza();
+	wchar_t* GetMenu();
 	wchar_t* GetDelivery();
 	wchar_t* GetSpecial();
-};
-
-class UI {
-private:
-	int star;
-	int day;
-	queue<Order*> list;
-public:
-	UI();
-	void GetOrder(); //주문 받는 함수
-	void PrintList(HDC hdc);
+	Pizza GetPizza();
 };

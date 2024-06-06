@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "pizza.h"
 
 #define NONE 0
@@ -23,15 +21,15 @@ Pizza::Pizza()
 	toppings[7] = &mushroom;
 }
 
-Pizza::Pizza(int* setting) {
-	Pizza();
-	
+//주문에 맞춰 피자 메뉴 세팅
+void Pizza::ResetPizza(int* setting) {
 	int index = 0;
 	for (; index < 3; index++) {
 		if (setting[index] == 1) {
 			*base[index] = true;
 		}
 	}
+	index--;
 	for (int index2 = 0; index2 < 8; index2++) {
 		*toppings[index2] = setting[index + index2];
 	}
