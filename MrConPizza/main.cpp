@@ -177,7 +177,9 @@ void DrawBuildings(Graphics& graphics) {
 int CheckCollisionWithBuildings(int x, int y, int radius) {
     for (int index = 0; index < buildingCount; index++) {
         if (buildings[index]->CheckCollision(x, y, radius)) {
-            return 1;
+
+            return index;
+
         }
     }
     return -1;
@@ -257,7 +259,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
     HBITMAP hbmOld;
 
     switch (iMessage) {
-    case WM_CREATE:
+    case WM_CREATE: {
+
         SetTimer(hWnd, ID_TIMER_MOVE, 50, NULL);
         timerSet = true;
 
@@ -291,6 +294,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
         SelectObject(hdcStatic, hbmStatic);
         ReleaseDC(hWnd, hdc);
 
+        Graphics staticGraphics(hdcStatic);
+        SolidBrush backgroundBrush(Color(255, 255, 255, 255));
         // 정적인 요소 그리기
         staticGraphics.FillRectangle(&backgroundBrush, 0, 0, 800, 600);
         DrawWalls(staticGraphics);
@@ -299,6 +304,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
             staticGraphics.DrawImage(backgroundImage, 0, 0, 800, 600);
         }
         return 0;
+    }
     case WM_COMMAND:
         switch (LOWORD(wParam)) { // 버튼 컨트롤
         case GAMESTART: // 게임 시작 버튼 클릭 시
@@ -456,6 +462,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
         }
         else if (gameState == EXPLAIN) {
             ShowWindow(GetDlgItem(hWnd, BACK), SW_SHOW);
+
+            wchar_t text[512];
+            wsprintf(text, L"이 게임은 주문에 맞게 피자를 제작하고 올바른 주소로 피자를 배달하는 게임입니다.\n3일동안 진행되며 잘못된 주문을 너무 많이 받으면 가게가 망할 수 있습니다.");
+            RECT textRect = { 100, 100, SCREEN_X - 100, SCREEN_Y - 100 };
+            DrawText(hdc, text, -1, &textRect, DT_LEFT);
+
+
         }
         else if (gameState == ORDER) {
             ui.PrintList(hdc);
@@ -491,11 +504,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
             ShowWindow(GetDlgItem(hWnd, PAPRIKA), SW_HIDE);
             ShowWindow(GetDlgItem(hWnd, DISPOSAL), SW_HIDE);
             ShowWindow(GetDlgItem(hWnd, COOK), SW_HIDE);
-
             // 더블 버퍼링을 위한 메모리 DC와 비트맵 생성
+
             hdcMem = CreateCompatibleDC(hdc);
             hbmMem = CreateCompatibleBitmap(hdc, 800, 600);
             hbmOld = (HBITMAP)SelectObject(hdcMem, hbmMem);
+
 
             // 정적인 요소를 메모리 DC로 복사
             BitBlt(hdcMem, 0, 0, SCREEN_X, SCREEN_Y, hdcStatic, 0, 0, SRCCOPY);
@@ -527,13 +541,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
             DrawImageFromFile(hdc, L"치즈.png", (SCREEN_X - 30 - IMAGE_WIDTH) / 2, (SCREEN_Y - 30 - IMAGE_HEIGHT) / 2, IMAGE_WIDTH + 40, IMAGE_HEIGHT + 30);
         }
         if (setting[PEPPERONI] > 0) {
-            DrawImageFromFile(hdc, L"페퍼로니.png", (SCREEN_X + 80 - IMAGE_WIDTH) / 2, (SCREEN_Y + 40 - IMAGE_HEIGHT) / 2, IMAGE_WIDTH - 20, IMAGE_HEIGHT + 30);
+            DrawImageFromFile(hdc, L"페퍼로니.png", (SCREEN_X + 50 - IMAGE_WIDTH) / 2, (SCREEN_Y + 40 - IMAGE_HEIGHT) / 2, IMAGE_WIDTH - 40, IMAGE_HEIGHT + 30);
         }
         if (setting[TOMATO] > 0) {
             DrawImageFromFile(hdc, L"토마토.png", (SCREEN_X + 80 - IMAGE_WIDTH) / 2, (SCREEN_Y + 40 - IMAGE_HEIGHT) / 2, IMAGE_WIDTH - 20, IMAGE_HEIGHT + 30);
         }
         if (setting[PAPRIKA] > 0) {
-            DrawImageFromFile(hdc, L"파프리카.png", (SCREEN_X + 80 - IMAGE_WIDTH) / 2, (SCREEN_Y + 40 - IMAGE_HEIGHT) / 2, IMAGE_WIDTH - 20, IMAGE_HEIGHT + 30);
+            DrawImageFromFile(hdc, L"파프리카.png", (SCREEN_X + 100 - IMAGE_WIDTH) / 2, (SCREEN_Y + 80 - IMAGE_HEIGHT) / 2, IMAGE_WIDTH - 40, IMAGE_HEIGHT + 70);
         }
         if (setting[PEPPER] > 0) {
             DrawImageFromFile(hdc, L"피망.png", (SCREEN_X + 80 - IMAGE_WIDTH) / 2, (SCREEN_Y + 40 - IMAGE_HEIGHT) / 2, IMAGE_WIDTH - 20, IMAGE_HEIGHT + 30);
@@ -551,7 +565,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
             DrawImageFromFile(hdc, L"버섯.png", (SCREEN_X + 80 - IMAGE_WIDTH) / 2, (SCREEN_Y + 40 - IMAGE_HEIGHT) / 2, IMAGE_WIDTH - 20, IMAGE_HEIGHT + 30);
         }
 
-        
+
 
         EndPaint(hWnd, &ps);
         return 0;
@@ -591,7 +605,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
                     if (collidedItemIndex != -1) {
                         buildings[collidedItemIndex]->visible = false; // 아이템 먹음
 
-                        MessageBox(hWnd, buildings[collidedItemIndex]->message.c_str(), L"배달", MB_OK | MB_ICONINFORMATION);
+                        int delivery = MessageBox(hWnd, buildings[collidedItemIndex]->message.c_str(), L"배달", MB_YESNO);
+                        if (delivery == IDYES) {
+                            Order* firstOrder = ui.GetList().front();
+                            if (buildings[collidedItemIndex]->message == firstOrder->GetPlace()) {
+                                if (ui.IsSame()) {
+                                    MessageBox(hWnd, L"배달이 올바르게 완료되었습니다.", L"배달", MB_OK | MB_ICONINFORMATION);
+                                }
+                                else {
+                                    MessageBox(hWnd, L"배달이 잘못되었습니다.", L"배달", MB_OK | MB_ICONINFORMATION);
+                                }
+
+                            }
+                            else {
+                                MessageBox(hWnd, L"배달이 잘못되었습니다", L"배달", MB_OK | MB_ICONINFORMATION);
+                            }
+                        }
 
                         // 모든 아이템을 다 먹었는지 확인
                         bool allItemsCollected = true;

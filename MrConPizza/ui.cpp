@@ -10,12 +10,14 @@ bool UI::GetDough() {
 	return dough;
 }
 
-void UI::IsSame() {
+bool UI::IsSame() {
 	if ((list.front()->GetPizza() == *deliveryBox.front()) == false) {
 		star--;
+		return false;
 	}
 	deliveryBox.pop();
 	list.pop();
+	return true;
 }
 
 int UI::GetDay() {
@@ -30,6 +32,9 @@ queue<Order*> UI::GetList() {
 	return list;
 }
 
+queue<Pizza*> UI::GetPizza() {
+	return deliveryBox;
+}
 void UI::InputBox(Pizza* pizza) {
 	deliveryBox.push(pizza);
 }

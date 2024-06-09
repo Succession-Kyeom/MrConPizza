@@ -29,7 +29,6 @@ void Pizza::ResetPizza(int* setting) {
 			*base[index] = true;
 		}
 	}
-	index--;
 	for (int index2 = 0; index2 < 8; index2++) {
 		*toppings[index2] = setting[index + index2];
 	}

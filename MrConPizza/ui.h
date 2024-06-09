@@ -18,7 +18,7 @@ public:
 	bool GetDough(); 
 
 	//(주문 피자) == (제작 피자) 확인 함수
-	void IsSame();
+	bool IsSame();
 	
 	//day 출력
 	int GetDay();
@@ -40,4 +40,6 @@ public:
 	
 	//주문 리스트 불러오기
 	queue<Order*> GetList();
+
+	queue<Pizza*> GetPizza();
 };
