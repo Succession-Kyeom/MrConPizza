@@ -189,7 +189,7 @@ void DrawWalls(HDC hdc)
         HBRUSH hBrush = CreateSolidBrush(walls[i].color);
         SelectObject(hdc, hBrush);
         Rectangle(hdc, walls[i].rect.left, walls[i].rect.top, walls[i].rect.right, walls[i].rect.bottom);
-        DeleteObject(hBrush);
+        DeleteObject(hBrush);   
     }
 }
 

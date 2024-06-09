@@ -57,13 +57,19 @@ void UI::GetOrder() {
 void UI::PrintList(HDC hdc) {
 	int i = 0;
 	wchar_t text[100];
-	
+	RECT rect;
+	HBRUSH hBrush = (HBRUSH)GetStockObject(WHITE_BRUSH);
+	rect.left = 890;
+	rect.right = 1250;
+	rect.top = 20 - 10;
+	rect.bottom = 400;
+	FillRect(hdc, &rect, hBrush);  // 사각형 채우기
 	SetTextAlign(hdc, TA_LEFT);
 	TextOut(hdc, 900, 20, L"주문서", lstrlen(L"주문서"));
-	
+
 	for (queue<Order*> temp = list; !temp.empty(); temp.pop()) {
 		Order* index = temp.front();
-		
+
 		wsprintf(text, L"주소: %s", index->GetPlace());
 		TextOut(hdc, 900, 40 + i * 100, text, lstrlen(text));
 		wsprintf(text, L"메뉴: %s", index->GetMenu());

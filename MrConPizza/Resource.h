@@ -44,6 +44,11 @@
 #define DISPOSAL 11
 #define COOK 12
 
+#define ENEMY_RADIUS 20
+#define ID_TIMER_MOVE 1
+#define ID_TIMER_CONTROL_LOCK 2
+#define BALL_RADIUS 15
+
 
 // 다음은 새 개체에 사용할 기본값입니다.
 //

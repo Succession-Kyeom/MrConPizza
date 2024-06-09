@@ -128,22 +128,34 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="building.cpp" />
+    <ClCompile Include="enemymotorbike.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="motorbike.cpp" />
     <ClCompile Include="order.cpp" />
     <ClCompile Include="pizza.cpp" />
     <ClCompile Include="pizzatest.cpp" />
+    <ClCompile Include="playermotorbike.cpp" />
     <ClCompile Include="ui.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="enemymotorbike.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="building.h" />
+    <ClInclude Include="motorbike.h" />
     <ClInclude Include="order.h" />
     <ClInclude Include="pizza.h" />
     <ClInclude Include="pizzatest.h" />
+    <ClInclude Include="playermotorbike.h" />
     <ClInclude Include="random.cpp" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="resource1.h" />
+    <ClInclude Include="resource2.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="ui.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MrConPizza1.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
