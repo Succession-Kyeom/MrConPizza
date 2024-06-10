@@ -35,7 +35,7 @@ GdiplusStartupInput m_GdiplusStartupInput;
 ULONG_PTR m_GdiplusToken;
 
 // 게임 상태 설정(초기값 START)
-enum GameState { START, EXPLAIN, ORDER, MAKE, DELIVERY };
+enum GameState { START, EXPLAIN, ORDER, MAKE, DELIVERY, AFTER, END };
 GameState gameState = START;
 
 // 메시지(이벤트) 발생 시 메시지를 전달받아 처리하는 역할
@@ -83,6 +83,8 @@ Wall walls[wallCount] = {
 const int buildingCount = 6;
 Building* buildings[buildingCount];
 
+int g_count = 0;
+
 bool g_controlLocked = false;
 bool g_upPressed = false;
 bool g_leftPressed = false;
@@ -113,6 +115,7 @@ void CreateButton(HWND hWnd, HINSTANCE hInstance) {
     CreateWindowW(L"Button", L"게임 시작", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 950, 475, 200, 50, hWnd, (HMENU)GAMESTART, hInstance, NULL);
     CreateWindowW(L"Button", L"게임 설명", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 950, 555, 200, 50, hWnd, (HMENU)HOWTOPLAY, hInstance, NULL);
     CreateWindowW(L"Button", L"돌아가기", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 950, 555, 200, 50, hWnd, (HMENU)BACK, hInstance, NULL);
+    CreateWindowW(L"Button", L"종료", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 950, 475, 200, 50, hWnd, (HMENU)QUIT, hInstance, NULL);
 
     // 피자 생성 시 재료 버튼
     CreateWindowW(L"Button", L"도우", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 30, 100, 100, 25, hWnd, (HMENU)DOUGH, hInstance, NULL);
@@ -135,6 +138,7 @@ void InitButton(HWND hWnd) {
     ShowWindow(GetDlgItem(hWnd, GAMESTART), SW_HIDE);
     ShowWindow(GetDlgItem(hWnd, HOWTOPLAY), SW_HIDE);
     ShowWindow(GetDlgItem(hWnd, BACK), SW_HIDE);
+    ShowWindow(GetDlgItem(hWnd, QUIT), SW_HIDE);
     ShowWindow(GetDlgItem(hWnd, DOUGH), SW_HIDE);
     ShowWindow(GetDlgItem(hWnd, SAUCE), SW_HIDE);
     ShowWindow(GetDlgItem(hWnd, CHEESE), SW_HIDE);
@@ -242,9 +246,11 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
     return (int)Message.wParam;
 }
 
+static int setting[11] = { 0 }; // static으로 설정하여 계속 유지되도록 함
+static Pizza* pizza = nullptr; // 피자 객체를 전역적으로 유지
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam) {
-    static int setting[11] = { 0 }; // static으로 설정하여 계속 유지되도록 함
-    static Pizza* pizza = nullptr; // 피자 객체를 전역적으로 유지
+    
     static int prevX, prevY;
     static Image* backgroundImage = nullptr;
 
@@ -306,6 +312,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
         return 0;
     }
     case WM_COMMAND:
+        hdc = BeginPaint(hWnd, &ps);
         switch (LOWORD(wParam)) { // 버튼 컨트롤
         case GAMESTART: // 게임 시작 버튼 클릭 시
             gameState = ORDER; // 주문 받기 화면 출력
@@ -330,6 +337,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
             gameState = START;
             ShowWindow(GetDlgItem(hWnd, BACK), SW_HIDE); // 돌아가기 버튼 숨기기
             InvalidateRect(hWnd, NULL, TRUE); // 강제로 화면 갱신
+            break;
+        case QUIT:
+            PostQuitMessage(0);
             break;
         case DOUGH: // 도우 생성 & 피자 동적 생성
             if (ui.GetDough() == false) {
@@ -427,8 +437,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
             break;
         case COOK: // 피자 제작 확정
             if (ui.GetDough() == true) {
-                ui.SetDough(false);
                 ui.InputBox(pizza);
+                ui.SetDough(false);
 
                 for (int index = 0; index < 11; index++) {
                     setting[index] = 0;
@@ -529,6 +539,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
             DeleteObject(hbmMem);
             DeleteDC(hdcMem);
         }
+        else if (gameState == AFTER) {
+            ShowWindow(GetDlgItem(hWnd, BACK), SW_SHOW);
+            ShowWindow(GetDlgItem(hWnd, QUIT), SW_SHOW);
+        }
 
         // 이미지를 그리는 코드
         if (ui.GetDough()) {
@@ -564,8 +578,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
         if (setting[MUSHROOM] > 0) {
             DrawImageFromFile(hdc, L"버섯.png", (SCREEN_X + 80 - IMAGE_WIDTH) / 2, (SCREEN_Y + 40 - IMAGE_HEIGHT) / 2, IMAGE_WIDTH - 20, IMAGE_HEIGHT + 30);
         }
-
-
 
         EndPaint(hWnd, &ps);
         return 0;
@@ -603,8 +615,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
                     // 아이템 충돌 검사 및 처리
                     int collidedItemIndex = CheckCollisionWithBuildings(playerBike->x, playerBike->y, BALL_RADIUS);
                     if (collidedItemIndex != -1) {
-                        buildings[collidedItemIndex]->visible = false; // 아이템 먹음
-
+                        g_upPressed = false;
+                        g_leftPressed = false;
+                        g_downPressed = false;
+                        g_rightPressed = false;
+                        buildings[collidedItemIndex]->DisableCollisionForDuration(hWnd, 10000);
                         int delivery = MessageBox(hWnd, buildings[collidedItemIndex]->message.c_str(), L"배달", MB_YESNO);
                         if (delivery == IDYES) {
                             Order* firstOrder = ui.GetList().front();
@@ -620,20 +635,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
                             else {
                                 MessageBox(hWnd, L"배달이 잘못되었습니다", L"배달", MB_OK | MB_ICONINFORMATION);
                             }
-                        }
-
-                        // 모든 아이템을 다 먹었는지 확인
-                        bool allItemsCollected = true;
-                        for (int i = 0; i < buildingCount; ++i) {
-                            if (buildings[i]->visible) {
-                                allItemsCollected = false;
+                            Sleep(1000);
+                            g_count++;
+                            if (g_count >= 3) {
+                                gameState = AFTER;
                                 break;
                             }
                         }
-
-                        if (allItemsCollected) {
-                            PostQuitMessage(0); // 프로그램 종료
-                        }
+                        buildings[collidedItemIndex]->EnableCollision();
                     }
 
                     // 적 오토바이 충돌 검사

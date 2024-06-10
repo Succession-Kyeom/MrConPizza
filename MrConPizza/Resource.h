@@ -29,6 +29,7 @@
 #define GAMESTART 100
 #define HOWTOPLAY 101
 #define BACK 99
+#define QUIT 102
 
 #define DOUGH 0
 #define SAUCE 1
